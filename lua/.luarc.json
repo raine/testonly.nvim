@@ -1,0 +1,9 @@
+{
+    "workspace.library": [
+        "/Users/raine/.local/share/nvim/plugged/neodev.nvim/types/stable",
+        "/opt/homebrew/Cellar/neovim/0.9.1/share/nvim/runtime/lua",
+        "/Users/raine/code/testonly.nvim/lua",
+        "${3rd}/luv/library"
+    ],
+    "workspace.checkThirdParty": false
+}
