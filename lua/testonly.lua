@@ -59,8 +59,6 @@ local function toggle_parent_block_exclusive(type)
 	end
 end
 
-local query_cache = {}
-
 -- Probably overkill to use treesitter for this
 local function reset_all_exclusive()
 	local bufnr = vim.api.nvim_get_current_buf()
@@ -76,15 +74,12 @@ local function reset_all_exclusive()
 	  ) @call
   ]]
 
-	local parsed_query = query_cache[query]
-	if not parsed_query then
-		parsed_query = vim.treesitter.query.parse("javascript", query)
-		query_cache[query] = parsed_query
-	end
-
-	local parser = vim.treesitter.get_parser(bufnr, "javascript")
+	local file_type = vim.api.nvim_buf_get_option(bufnr, "filetype")
+	local parsed_query = vim.treesitter.query.parse(file_type, query)
+	local parser = vim.treesitter.get_parser(bufnr)
 	local root = parser:parse()[1]:root()
 	local start_row, _, end_row, _ = root:range()
+
 	for _, match in parsed_query:iter_matches(root, bufnr, start_row, end_row) do
 		for id, node in pairs(match) do
 			local name = parsed_query.captures[id]
