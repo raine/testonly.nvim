@@ -74,8 +74,11 @@ local function reset_all_exclusive()
 	  ) @call
   ]]
 
-	local file_type = vim.api.nvim_buf_get_option(bufnr, "filetype")
-	local parsed_query = vim.treesitter.query.parse(file_type, query)
+	local filetype = vim.api.nvim_buf_get_option(bufnr, "filetype")
+	local lang = vim.treesitter.language.get_lang(filetype)
+	assert(lang, "Language not found for filetype: " .. filetype)
+
+	local parsed_query = vim.treesitter.query.parse(lang, query)
 	local parser = vim.treesitter.get_parser(bufnr)
 	local root = parser:parse()[1]:root()
 	local start_row, _, end_row, _ = root:range()
