@@ -2,6 +2,7 @@ local M = {}
 
 local ts_utils = require("nvim-treesitter.ts_utils")
 local ns_id = vim.api.nvim_create_namespace("TestOnlyHighlight")
+local get_node_at_cursor = require("get_node_at_cursor")
 
 -- For debugging nodes
 ---@diagnostic disable-next-line: unused-function, unused-local
@@ -34,7 +35,8 @@ end
 
 local function find_parent_test_block_node(block_type)
 	local bufnr = vim.api.nvim_get_current_buf()
-	local node = ts_utils.get_node_at_cursor()
+	local node = get_node_at_cursor()
+
 	while node do
 		-- Matches for example it(...) and it.only(...)
 		if node:type() == "call_expression" then
