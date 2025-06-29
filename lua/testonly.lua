@@ -85,15 +85,14 @@ local function reset_all_exclusive()
 	local root = parser:parse()[1]:root()
 	local start_row, _, end_row, _ = root:range()
 
-	for _, match in parsed_query:iter_matches(root, bufnr, start_row, end_row) do
-		for id, node in pairs(match) do
-			local name = parsed_query.captures[id]
-			if name == "call" then
-				local child = node:named_child(0)
-				local text = vim.treesitter.get_node_text(child, bufnr)
+	for id, node, _ in parsed_query:iter_captures(root, bufnr, start_row, end_row) do
+		if parsed_query.captures[id] == "call" then
+			local first_child = node:named_child(0)
+			if first_child then
+				local text = vim.treesitter.get_node_text(first_child, bufnr)
 
 				if text == "it.only" or text == "describe.only" then
-					toggle_test_exclusive(child)
+					toggle_test_exclusive(first_child)
 				end
 			end
 		end
